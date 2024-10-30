@@ -9,6 +9,8 @@ const output = select('.output');
 const alarmSound = new Audio('./assets/audio/alarm.mp3');
 alarmSound.type = 'audio/mp3';
 
+let intervalId = 0;
+
 function select(selector, scope = document) {
     return scope.querySelector(selector);
 }
@@ -51,8 +53,15 @@ listen('click', setAlarm, () => {
     // Set alarm.
     timeAlarm.style.visibility = 'visible';
     timeAlarm.innerText = alarmTime;  
+    
+    if (intervalId != 0) {
+        // Finish the previous alarm.
+        clearInterval(intervalId);
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+    }
 
-    setInterval(() => {
+    intervalId = setInterval(() => {
         currentTime = getTime();
 
         if (alarmTime === currentTime) {
